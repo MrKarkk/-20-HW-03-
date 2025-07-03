@@ -1,0 +1,25 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}Поиск новостей{% endblock title %}
+
+{% block content %}
+<h1>Поиск новостей</h1>
+
+<form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit">Поиск</button>
+</form>
+
+<hr>
+
+{% if searchs %}
+    <ul>
+        {% for post in searchs %}
+            <li><strong>{{ post.title }}</strong> — {{ post.created_at|date:"d.m.Y" }} — автор: {{ post.author.user.username }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Новостей не найдено.</p>
+{% endif %}
+
+{% endblock content %}
