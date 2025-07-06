@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404, render
 from .models import Post
 from .filters import  PostFilter
 from django.views.generic import (
@@ -7,6 +6,7 @@ from django.views.generic import (
 from .forms import NewsForm
 from django.urls import reverse_lazy
 from django_filters.views import FilterView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 class NewsList(ListView):
@@ -45,10 +45,12 @@ class NewsSearch(FilterView):
         return context
 
 
-class NewsCreate(CreateView):
+class NewsCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'news.add_post'
     form_class = NewsForm
     model = Post
     template_name = 'news/news_create.html'
+    success_url = '/news/'
 
     def form_valid(self, form):
         post = form.save(commit=False)
@@ -67,13 +69,15 @@ class ArticleCreate(CreateView):
         return super().form_valid(form)
 
 
-class NewsUpdate(UpdateView):
+class NewsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'news.change_post'
     form_class = NewsForm
     model = Post
     template_name = 'news/news_edit.html'
 
 
-class NewsDelete(DeleteView):
+class NewsDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'news.delete_post'
     model = Post
     template_name = 'news/news_delete.html'
     success_url = reverse_lazy('news_list')  # Укажи нужный путь

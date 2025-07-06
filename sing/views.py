@@ -18,6 +18,7 @@ class BaseRegisterView(CreateView):
     success_url = '/' # URL, на который нужно направить пользователя после успешного ввода данных в форму.
 
 
+@login_required
 def logout_page(request):
     if request.method == "POST":
         logout(request)
@@ -45,6 +46,3 @@ def become_author(request):
     if not user.groups.filter(name='authors').exists():
         user.groups.add(author_group)
     return redirect('news_list')  # Перенаправить куда нужно
-
-
-
